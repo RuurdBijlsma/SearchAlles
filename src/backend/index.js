@@ -20,10 +20,13 @@ function createWindow() {
         height: programHeight,
         x: width / 2 - programWidth / 2,
         y: height / 4,
-        backgroundColor: '#14151b',
+        skipTaskbar: true,
+        alwaysOnTop: true,
+        transparent: true,
         frame: false,
-        skipTaskbar: true
+        toolbar: false
     });
+
     mainWindow.once('ready-to-show', () => mainWindow.show());
 
     let indexUrl = path.join(__dirname, '../frontend/index.html');
@@ -35,8 +38,8 @@ function createWindow() {
 
     mainWindow.setMenu(null);
 
-    if (isDev)
-        mainWindow.webContents.openDevTools();
+    // if (isDev)
+    //     mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -44,7 +47,7 @@ function createWindow() {
 }
 
 let tray = null;
-app.on('ready', () => {
+app.on('ready', async () => {
     createWindow();
 
     tray = new Tray(path.join(__dirname, '../../res/img/icon.ico'));
