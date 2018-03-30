@@ -1,22 +1,51 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "electron-template",
+  "version": "0.0.1",
+  "description": "Electron template by Ruurd Bijlsma",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "build"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/ruurdbijlsma/temporary",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "template"
   ],
-  "author": "GitHub",
+  "author": "Ruurd Biljsma",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.8.4"
+    "electron": "^1.8.4",
+    "electron-builder": "^19.55.3"
+  },
+  "dependencies": {
+    "electron-is-dev": "^0.1.2"
+  },
+  "build": {
+    "appId": "Ruurd Movie Maker",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "NSIS ",
+      "icon": "res/img/icon.ico"
+    }
   }
 }
