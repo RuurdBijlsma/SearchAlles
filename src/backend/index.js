@@ -2,7 +2,7 @@ const electron = require('electron');
 const path = require('path');
 const url = require('url');
 const isDev = require('electron-is-dev');
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, Menu, Tray} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -10,12 +10,19 @@ let mainWindow;
 
 function createWindow() {
     const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
+    let programWidth = 1000;
+    let programHeight = 60;
+
     mainWindow = new BrowserWindow({
         show: false,
         icon: path.join(__dirname, '../../res/img/icon.png'),
-        width: 1200,
-        height: 800,
-        backgroundColor: '#14151b'
+        width: programWidth,
+        height: programHeight,
+        x: width / 2 - programWidth / 2,
+        y: height / 4,
+        backgroundColor: '#14151b',
+        frame: false,
+        skipTaskbar: true
     });
     mainWindow.once('ready-to-show', () => mainWindow.show());
 
@@ -36,7 +43,22 @@ function createWindow() {
     });
 }
 
-app.on('ready', createWindow);
+let tray = null;
+app.on('ready', () => {
+    createWindow();
+
+    tray = new Tray(path.join(__dirname, '../../res/img/icon.ico'));
+    let contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Toggle visibility',
+            click: () => mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+        },
+        {label: 'Options', click: () => console.log('options clicked')},
+        {role: "quit"},
+    ]);
+    tray.setToolTip('Alles Search');
+    tray.setContextMenu(contextMenu);
+});
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {

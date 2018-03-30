@@ -8,11 +8,15 @@
     "dist": "build"
   },
   "repository": "https://github.com/ruurdbijlsma/temporary",
+  "homepage": "https://ruurdbijlsma.com",
   "keywords": [
     "Electron",
     "template"
   ],
-  "author": "Ruurd Biljsma",
+  "author": {
+    "name": "Ruurd Bijlsma",
+    "email": "mail@ruurdbijlsma.com"
+  },
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.8.4",
@@ -22,7 +26,8 @@
     "electron-is-dev": "^0.1.2"
   },
   "build": {
-    "appId": "Ruurd Movie Maker",
+    "appId": "com.ruurdbijlsma.template",
+    "productName": "Electron Template",
     "dmg": {
       "contents": [
         {
