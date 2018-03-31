@@ -44,7 +44,6 @@ function search(query) {
             <div class="result-source-name">${resultName}</div>
         `;
 
-        console.log({resultList})
         for (let result of resultList) {
             result.index = index++;
 

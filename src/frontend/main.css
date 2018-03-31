@@ -6,7 +6,7 @@
     --text-on-background: rgba(255, 255, 255, 0.9);
     --border-radius: 10px;
     --primary-color: rgb(40, 80, 195);
-    --text-on-primary:rgba(255,255,255,0.9);
+    --text-on-primary: rgba(255, 255, 255, 0.9);
 }
 
 * {
@@ -72,8 +72,10 @@ body, html {
 .result-list {
     width: 350px;
     position: relative;
+    height: calc(100% - 60px);
     bottom: 0;
     left: 0;
+    overflow-y: auto;
 }
 
 .result-source-name {
@@ -96,8 +98,8 @@ body, html {
     height: 19px;
 }
 
-.result-item[active]{
-    color:var(--text-on-primary);
+.result-item[active] {
+    color: var(--text-on-primary);
 }
 
 .result-item * {

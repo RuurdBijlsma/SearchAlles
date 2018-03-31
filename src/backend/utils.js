@@ -1,11 +1,31 @@
 const fs = require('fs');
+const path = require('path');
 
 exports.listDir = name => {
-    return new Promise(resolve => {
+    return new Promise((resolve, error) => {
         fs.readdir(name, (err, files) => {
-            resolve(files);
+            if (err)
+                error(err);
+            else
+                resolve(files);
         });
     });
+};
+
+exports.isDir = dir => fs.lstatSync(dir).isDirectory();
+
+exports.allFilesInDir = async name => {
+    let items = await this.listDir(name);
+    let files = [];
+    for (let item of items) {
+        let fullPath = path.join(name, item);
+        if (this.isDir(fullPath)) {
+            files = files.concat(await this.allFilesInDir(fullPath));
+        } else {
+            files.push(fullPath);
+        }
+    }
+    return files;
 };
 
 exports.fileSize = name => fs.statSync(name).size;

@@ -1,3 +1,5 @@
+const levenshtein = require('fast-levenshtein');
+
 class SearchSource {
     constructor() {
         this.config = new SearchSourceConfig({
