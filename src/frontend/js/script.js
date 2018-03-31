@@ -3,10 +3,12 @@
 // Abstraheren
 // Plugin support
 // Cachen
-// Prioriteiten aan searchsources geven
 // Top hit bedenken
+// Scroll balk stijlen
+// Settings.json met elke source options erin
 
 document.addEventListener('DOMContentLoaded', init, false);
+const utils = require('../backend/utils.js');
 const {remote} = require('electron');
 const globalShortcut = remote.globalShortcut;
 const mainWindow = remote.getCurrentWindow();
@@ -14,26 +16,25 @@ const mainWindow = remote.getCurrentWindow();
 async function init() {
     windowHider = new WindowHider(mainWindow, document.body);
     searcher = new Search(
-        new SearchSource()
+        new SearchSource(),
+        new AppSearch()
     );
 
     registerShortcuts();
 }
 
 function search(query) {
-    if (query.length > 0)
-        windowHider.expand();
-    else
+    if (query.length === 0) {
         windowHider.retract();
+        return;
+    }
 
     currentResults = searcher.getResults(query);
-    console.log(currentResults);
-
-    let isFirstResult = true;
-    let firstResult;
+    currentIndex = 0;
 
     let html = '';
     let resultListElement = document.body.querySelector('.result-list');
+    let index = 0;
     for (let resultName in currentResults) {
         let resultList = currentResults[resultName];
         if (resultList.length === 0)
@@ -43,14 +44,15 @@ function search(query) {
             <div class="result-source-name">${resultName}</div>
         `;
 
+        console.log({resultList})
         for (let result of resultList) {
-            if (isFirstResult) {
-                isFirstResult = false;
-                firstResult = {resultName, result};
-            }
+            result.index = index++;
 
             html += `
-                <div class="result-item" id="${resultName}${result.id}" onmousedown="selectResult('${resultName}','${result.id}')">
+                <div class="result-item" 
+                id="result${result.index}" 
+                onmousedown="selectResult(${result.index})"
+                ondblclick="activateResult(${result.index})">
                     <div class="result-item-icon" style="background-image: url('${result.iconUrl}')"></div>
                     <span>${result.title}</span>
                 </div>
@@ -58,25 +60,69 @@ function search(query) {
         }
     }
     resultListElement.innerHTML = html;
+    maxIndex = index;
 
-    selectResult(firstResult.resultName, firstResult.result.id.toString());
+    if (index > 0) {
+        windowHider.expand();
+        selectResult(currentIndex);
+    } else {
+        windowHider.retract();
+    }
 }
 
-function selectResult(resultName, id) {
+function getResultByIndex(index) {
+    for (let resultName in currentResults) {
+        for (let result of currentResults[resultName]) {
+            if (result.index === index)
+                return result;
+        }
+    }
+    return null;
+}
+
+function activateResult(index) {
+    let selectedResult = getResultByIndex(index);
+    console.log(selectedResult);
+    selectedResult.activate();
+}
+
+function selectResult(index) {
+    currentIndex = index;
     for (let resultElement of document.querySelectorAll('.result-item[active]')) {
         resultElement.removeAttribute('active');
     }
 
-    let selectedResult = currentResults[resultName].find(r => r.id.toString() === id);
-    let element = document.getElementById(resultName + id.toString());
+    let selectedResult = getResultByIndex(index);
+    let element = document.getElementById('result' + index);
     element.setAttribute('active', '');
 
     document.querySelector('.result-content').innerHTML = selectedResult.getContent();
 }
 
+function selectUp() {
+    if (currentIndex > 0)
+        currentIndex--;
+    selectResult(currentIndex);
+}
+
+function selectDown() {
+    if (currentIndex + 1 < maxIndex)
+        currentIndex++;
+    selectResult(currentIndex);
+}
+
 function registerShortcuts() {
     document.addEventListener('keydown', e => {
         switch (e.key) {
+            case "ArrowUp":
+                selectUp();
+                break;
+            case "ArrowDown":
+                selectDown();
+                break;
+            case "Enter":
+                getResultByIndex(currentIndex).activate();
+                break;
             case "F12":
                 remote.getCurrentWindow().webContents.toggleDevTools();
                 break;

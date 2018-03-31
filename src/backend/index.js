@@ -38,8 +38,8 @@ function createWindow() {
 
     mainWindow.setMenu(null);
 
-    // if (isDev)
-    //     mainWindow.webContents.openDevTools();
+    if (isDev)
+        mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
         mainWindow = null;

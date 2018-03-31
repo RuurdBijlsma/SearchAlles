@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="main.css">
     <script src="js/WindowHider.js"></script>
+    <script src="js/SearchSources/SearchSourceConfig.js"></script>
     <script src="js/SearchSources/SearchSource.js"></script>
     <script src="js/SearchSources/SearchResult.js"></script>
     <script src="js/SearchSources/AppSearch.js"></script>
@@ -14,24 +15,13 @@
 <body>
 <div class="content">
     <div class="search-container">
-        <i class="material-icons search-icon">search</i><input oninput="search(event.target.value)" type="text" class="search-input"
+        <i class="material-icons search-icon">search</i><input oninput="search(event.target.value)" type="text"
+                                                               class="search-input"
                                                                placeholder="Alles Search">
     </div>
     <div class="search-result">
-        <div class="result-list">
-            <div class="result-source-name">Default</div>
-            <div class="result-item">
-                <div class="result-item-icon"></div>
-                <span>Default Result 1</span>
-            </div>
-            <div class="result-item">
-                <div class="result-item-icon"></div>
-                <span>Default Result 2</span>
-            </div>
-        </div>
-        <div class="result-content">
-
-        </div>
+        <div class="result-list"></div>
+        <div class="result-content"></div>
     </div>
 </div>
 </body>

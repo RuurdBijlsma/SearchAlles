@@ -10,7 +10,9 @@ class WindowHider {
         this.isExpanded = false;
 
         this.retract();
-        this.hide(false);
+
+        setTimeout(()=>this.show(), 500);
+        // this.hide(false);
     }
 
     async expand() {
