@@ -63,7 +63,7 @@ app.on('ready', async () => {
     tray.setContextMenu(contextMenu);
 
     mainWindow.on('close', () => {
-        tray.destroy()
+        tray.destroy();
     });
 });
 

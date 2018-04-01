@@ -11,7 +11,7 @@ class SearchSource {
         });
     }
 
-    // Abstract
+    // Virtual
     matches(query) {
         return true;
     }

@@ -144,6 +144,9 @@ body, html {
     padding: 10px;
     background-color: var(--background-darker);
 }
+.result-content *{
+    font-weight: 300;
+}
 
 *:focus {
     outline: none !important;

@@ -12,7 +12,8 @@ class AppSearch extends SearchSource {
             name: 'Applications',
             onlySpecificMatches: false,
             priority: 5,
-            resultLimit: 5
+            resultLimit: 5,
+            showImmediately: true,
         });
 
         this.windowsAppDirectories = [
@@ -28,6 +29,7 @@ class AppSearch extends SearchSource {
     }
 
     async initializeAppList() {
+        console.log('Loading apps');
         let files = [];
         for (let dir of this.windowsAppDirectories) {
             files = files.concat(await utils.allFilesInDir(dir));
@@ -44,6 +46,7 @@ class AppSearch extends SearchSource {
                 }
             });
         }
+        console.log('Done loading apps');
     }
 
     async getExeIcon(path) {
@@ -80,7 +83,7 @@ class AppSearch extends SearchSource {
                 } else {
                     result.oldIcon = result.icon;
                     result.shortcutPath = path;
-                    result.icon = await this.getExeIcon(result.shortcutPath);
+                    result.icon = await this.getExeIcon(result.expanded.icon.length ? result.expanded.icon : result.shortcutPath);
                     resolve(result);
                 }
             });
@@ -101,16 +104,20 @@ class AppSearch extends SearchSource {
 
     getMatchingApps(query) {
         query = query.toLowerCase();
+        return this.appList
+            .filter(app => app.name.toLowerCase().includes(query))
+            .sort((a, b) => a.name.indexOf(query) - b.name.indexOf(query));
         return this.appList.filter(app => {
             let appWords = app.name.toLowerCase().split(' ');
-            for (let word of appWords)
-                if (word.startsWith(query))
-                    return true;
+            for (let appWord of appWords)
+                for (let queryWord of query)
+                    if (appWord.startsWith(queryWord))
+                        return true;
             return false;
         });
     }
 
-    getResults(query) {
+    async getResults(query) {
         let apps = this.getMatchingApps(query);
         console.log(apps);
         return apps.map(app => new SearchResult({
@@ -124,9 +131,8 @@ class AppSearch extends SearchSource {
                 activate: () => {
                     console.log(app);
                     let command = `"${app.expanded.target}" ${app.args}`;
-                    console.log(command);
-                    exec(command);
                     this.hideApp();
+                    exec(command);
                 }
             })
         );

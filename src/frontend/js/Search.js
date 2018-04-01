@@ -1,30 +1,37 @@
 class Search {
-    constructor(windowHider, ...searchSources) {
+    constructor(...searchSources) {
         this.sources = searchSources;
+        this.doneTypingTimeout = -1;
+        this.doneTypingDelay = 1000;
     }
 
-    getResults(query) {
-        let isSpecificQuery = query[0] === ':';
+    async getResults(query, showAllowed = false) {
+        let realQuery = query;
+        let isSpecificQuery = realQuery[0] === ':';
         let validSources;
+        console.log({isSpecificQuery})
         if (isSpecificQuery) {
-            let queryTokens = query.split(' ');
+            let queryTokens = realQuery.split(' ');
             let sourceName = queryTokens[0].substr(1).toLowerCase();
-            query = queryTokens.slice(1).join(' ');
+            realQuery = queryTokens.slice(1).join(' ');
             validSources = this.sources
                 .filter(source => source.config.name.toLowerCase().startsWith(sourceName))
-                .filter(source => source.matches(query))
+                .filter(source => source.matches(realQuery))
                 .sort((sourceA, sourceB) => sourceB.config.priority - sourceA.config.priority);
         } else {
             validSources = this.sources
                 .filter(source => !source.config.onlySpecificMatches)
-                .filter(source => source.matches(query))
+                .filter(source => source.matches(realQuery))
                 .sort((sourceA, sourceB) => sourceB.config.priority - sourceA.config.priority);
         }
 
+
         let result = {};
         for (let source of validSources) {
-            result[source.config.name] = source.getResults(query).slice(0, source.config.resultLimit);
+            let sourceResults = await source.getResults(realQuery);
+            result[source.config.name] = sourceResults.slice(0, source.config.resultLimit);
         }
+
         return result;
     }
 }

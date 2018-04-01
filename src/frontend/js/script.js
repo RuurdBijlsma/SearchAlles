@@ -4,9 +4,11 @@
 // Plugin support
 // Cachen
 // Top hit bedenken
-// Scroll balk stijlen
+// Log framework maken
 // Settings.json met elke source options erin
 // Bij appsearch met afortingen zoeken bijvoorbeeld as naar android studio
+// App search cahcen en bijhouden hoevaak een app gekozen is
+// too many requests voorkomen op een of andere manier, misschien detecteren wanneer typen klaar is
 
 document.addEventListener('DOMContentLoaded', init, false);
 const utils = require('../backend/utils.js');
@@ -17,20 +19,21 @@ const mainWindow = remote.getCurrentWindow();
 async function init() {
     windowHider = new WindowHider(mainWindow, document.body);
     searcher = new Search(
-        new SearchSource(windowHider),
-        new AppSearch(windowHider)
+        new Calculator(windowHider),
+        new AppSearch(windowHider),
+        new TorrentSearch(windowHider),
     );
 
     registerShortcuts();
 }
 
-function search(query) {
+async function search(query) {
     if (query.length === 0) {
         windowHider.retract();
         return;
     }
 
-    currentResults = searcher.getResults(query);
+    currentResults = await searcher.getResults(query);
     currentIndex = 0;
 
     let html = '';
@@ -100,12 +103,16 @@ function selectResult(index) {
 }
 
 function selectUp() {
+    if (typeof currentIndex === 'undefined') return;
+
     if (currentIndex > 0)
         currentIndex--;
     selectResult(currentIndex);
 }
 
 function selectDown() {
+    if (typeof currentIndex === 'undefined') return;
+
     if (currentIndex + 1 < maxIndex)
         currentIndex++;
     selectResult(currentIndex);

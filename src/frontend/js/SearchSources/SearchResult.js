@@ -1,5 +1,5 @@
 class SearchResult {
-    constructor({iconUrl, title, getContent, activate}) {
+    constructor({iconUrl, title, getContent, activate = {}}) {
         this.iconUrl = iconUrl;
         this.title = title;
         this.getContent = getContent;

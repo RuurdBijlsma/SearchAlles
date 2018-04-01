@@ -11,7 +11,7 @@ class WindowHider {
 
         this.retract();
 
-        setTimeout(()=>this.show(), 500);
+        setTimeout(() => this.show(), 500);
         // this.hide(false);
     }
 
