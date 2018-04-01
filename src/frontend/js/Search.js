@@ -1,5 +1,5 @@
 class Search {
-    constructor(...searchSources) {
+    constructor(windowHider, ...searchSources) {
         this.sources = searchSources;
     }
 
@@ -23,7 +23,7 @@ class Search {
 
         let result = {};
         for (let source of validSources) {
-            result[source.config.name] = source.getResults(query);
+            result[source.config.name] = source.getResults(query).slice(0, source.config.resultLimit);
         }
         return result;
     }

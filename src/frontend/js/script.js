@@ -6,6 +6,7 @@
 // Top hit bedenken
 // Scroll balk stijlen
 // Settings.json met elke source options erin
+// Bij appsearch met afortingen zoeken bijvoorbeeld as naar android studio
 
 document.addEventListener('DOMContentLoaded', init, false);
 const utils = require('../backend/utils.js');
@@ -16,8 +17,8 @@ const mainWindow = remote.getCurrentWindow();
 async function init() {
     windowHider = new WindowHider(mainWindow, document.body);
     searcher = new Search(
-        new SearchSource(),
-        new AppSearch()
+        new SearchSource(windowHider),
+        new AppSearch(windowHider)
     );
 
     registerShortcuts();

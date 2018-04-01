@@ -1,18 +1,22 @@
-const levenshtein = require('fast-levenshtein');
-
 class SearchSource {
-    constructor() {
+    constructor(windowHider) {
+        this.windowHider = windowHider;
+
+        // Abstract
         this.config = new SearchSourceConfig({
             name: 'Default',
             onlySpecificMatches: false,
-            priority: 0
+            priority: 0,
+            resultLimit: 2
         });
     }
 
+    // Abstract
     matches(query) {
         return true;
     }
 
+    // Abstract
     getResults(query) {
         return [
             new SearchResult({
@@ -37,5 +41,14 @@ class SearchSource {
                 }
             })
         ];
+    }
+
+    // Helper methods
+    hideApp() {
+        this.windowHider.hide();
+    }
+
+    showApp() {
+        this.windowHider.show();
     }
 }

@@ -7,6 +7,14 @@
     --border-radius: 10px;
     --primary-color: rgb(40, 80, 195);
     --text-on-primary: rgba(255, 255, 255, 0.9);
+    /* --background: #d7d8dd;
+    --background-dark: rgba(255, 255, 255, 0.15);
+    --background-darker: rgba(255, 255, 255, 0.3);
+    --background-darkest: rgba(255, 255, 255, 0.4);
+    --text-on-background: rgba(0, 0, 0, 0.9);
+    --border-radius: 10px;
+    --primary-color: rgb(40, 80, 195);
+    --text-on-primary: rgba(255, 255, 255, 0.9); */
 }
 
 * {
@@ -139,4 +147,26 @@ body, html {
 
 *:focus {
     outline: none !important;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.20);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(0, 0, 0, 0.60);
 }

@@ -61,6 +61,10 @@ app.on('ready', async () => {
     ]);
     tray.setToolTip('Alles Search');
     tray.setContextMenu(contextMenu);
+
+    mainWindow.on('close', () => {
+        tray.destroy()
+    });
 });
 
 app.on('window-all-closed', function () {

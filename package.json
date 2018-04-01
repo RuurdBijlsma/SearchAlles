@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "electron-is-dev": "^0.1.2",
-    "fast-levenshtein": "^2.0.6",
     "icon-extractor": "^1.0.3",
     "windows-shortcuts": "^0.1.6"
   },

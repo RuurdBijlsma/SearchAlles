@@ -1,15 +1,18 @@
 const ws = require('windows-shortcuts');
 const path = require('path');
 const iconExtractor = require('icon-extractor');
+const {exec} = require('child_process');
+
 
 class AppSearch extends SearchSource {
-    constructor() {
-        super();
+    constructor(windowHider) {
+        super(windowHider);
 
         this.config = new SearchSourceConfig({
             name: 'Applications',
             onlySpecificMatches: false,
-            priority: 5
+            priority: 5,
+            resultLimit: 5
         });
 
         this.windowsAppDirectories = [
@@ -64,6 +67,7 @@ class AppSearch extends SearchSource {
         path = path.replace(/%homepath%/gi, process.env.HOMEPATH);
         path = path.replace(/%appdata%/gi, process.env.APPDATA);
         path = path.replace(/%systemroot%/gi, process.env.SystemRoot);
+        path = path.replace(/%programfiles%/gi, process.env.ProgramFiles);
 
         return path;
     }
@@ -74,13 +78,9 @@ class AppSearch extends SearchSource {
                 if (err) {
                     resolve(false);
                 } else {
-                    result.target = this.fixPath(result.target);
-                    let iconPath = result.icon.length > 0 ? this.fixPath(result.icon) : result.target;
                     result.oldIcon = result.icon;
                     result.shortcutPath = path;
-                    if (path.toLowerCase().includes('fire'))
-                        console.log(iconPath);
-                    result.icon = await this.getExeIcon(iconPath);
+                    result.icon = await this.getExeIcon(result.shortcutPath);
                     resolve(result);
                 }
             });
@@ -112,16 +112,21 @@ class AppSearch extends SearchSource {
 
     getResults(query) {
         let apps = this.getMatchingApps(query);
+        console.log(apps);
         return apps.map(app => new SearchResult({
                 iconUrl: 'data:image/png;base64, ' + app.icon.Base64ImageData,
                 title: app.name,
                 getContent: () => `
-                    <img src="data:image/png;base64, ${app.icon.Base64ImageData}">
+                    <img src="data:image/png;base64,  ${app.icon.Base64ImageData}">
                     <h1>${app.name}</h1>
-                    <p>${query}</p>
+                    <p>${app.desc}</p>
                 `,
                 activate: () => {
-                    alert('open app:' + JSON.stringify(app));
+                    console.log(app);
+                    let command = `"${app.expanded.target}" ${app.args}`;
+                    console.log(command);
+                    exec(command);
+                    this.hideApp();
                 }
             })
         );
